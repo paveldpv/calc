@@ -1,10 +1,11 @@
 import React from 'react';
 import './App.css';
+import Calc from './container/Calc';
 
 function App() {
   return (
-    <div className=" text-7xl">
-      call
+    <div >
+      <Calc/>
     </div>
   );
 }
