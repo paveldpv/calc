@@ -24,14 +24,19 @@ const calc:((str:string)=>Promise<string>)=async(str)=>{
 
 const validBrace:((str:string,char:string)=>boolean)=(str,char)=>{
   let result:boolean=false  
-
-  if(str.length===0&&char===`(`)result=true //(....
-
-  if(str[str.length-1]===`)`&&char===`)`){ // ..))
-    result=true
+  const lastChar=str[str.length-1]
+ 
+  switch (char) {
+    case `)`:
+      if(/[0-9]/.test(lastChar)&&str.includes(`(`)) result=true;  
+      break;
+   case `(`:
+      if(str.length===0) result=true            
+      if(!/[0-9]/.test(lastChar)) result=true;      
+        break;
+    default: if(/[0-9]/.test(lastChar)||lastChar===`)`||lastChar===`(`) result=true
+      break;
   }
-  if(str.includes(`(`)&&char==`)`)result=true
-
   return result
 }
 
@@ -57,9 +62,9 @@ export default function Button({button,setDisplay,displayValue}:buttonProps) {
             validBrace(displayValue,`(`) && setDisplay(prev=>prev+`${button}`)
            break
         case`+`:case`-`:case`/`:case`*`:case`%`:case`.`:case`)`:                
-          displayValue.length!=0&&setDisplay(prev=>prev+`${button}`)        
+          validBrace(displayValue,button)&&setDisplay(prev=>prev+`${button}`)        
            break
-        default:setDisplay(prev=>prev+`${button}`)
+        default: setDisplay(prev=>prev+`${button}`)
           break;
       }
 
@@ -68,7 +73,7 @@ export default function Button({button,setDisplay,displayValue}:buttonProps) {
     return (
     <button 
     onClick={clickHeandler}
-    className={`${button===`=`&&` bg-green-700`}
+    className={`${button===`=`&&`bg-green-300`}
     text-4xl font-bold p-4 bg-gray-700 text-white rounded-md shadow-lg hover:shadow-2xl hover:bg-gray-800 ` }>
       {button}
     </button>
